@@ -1,14 +1,15 @@
 # UTAPI CloudServer Integration
 
-## Instructions for setup-
+## Instructions for setup
 
-### 1. Prerequit packages:
+### 1. Required packages:
 * node v6.x +
 * npm 3.x +
 * redis server 3.2.x
 * s3cmd
 * awscli
 * redis-cli (optional)
+{{ADD COMMANDS FOR EACH INSTALL}}
 
 ### 2. Setting up Zenko Cloud Server (formerly S3 server):
 * Clone the cloud server:
@@ -33,19 +34,24 @@ npm i
 	}
 }
 ```
+{{MAKE THIS MORE MODULAR: EXPLAIN THE HOST SHOULD BE THE SAME AS CLOUDSERVER HOST, ETC}}
+
 * Start the Zenko cloud server in a new terminal:
 ```
 S3BACKEND=file npm start
+{{PLEASE REWRITE THIS CHUNK TO MAKE IT WORK WITH DOCKER CONTAINERS}}
 ```
 ### 3. Start the UTAPI server:
 ```
 npm run start_utapi
+{{PLEASE REWRITE THIS CHUNK TO MAKE IT WORK WITH DOCKER CONTAINERS}}
 ```
 * By default the UTAPI server runs at http://localhost:8100
 
 ### 4. Start the Redis server:
 ```
 redis-server
+{{PLEASE REWRITE THIS CHUNK TO MAKE IT WORK WITH DOCKER CONTAINERS}}
 ```
 
 ### 5. Configure access keys for the utapiuser:
@@ -59,6 +65,7 @@ AWS Secret Access Key [None]: verySecretKey1
 Default region name [None]:
 Default output format [None]:
 ```
+{{PLEASE LINK TO S3 AND UTAPI DOC SECTIONS ABOUT USER ACCESS CONFIGURATION}}
 ### 6. Testing Cloud Server (s3 server):
 
 * Create a bucket named 'utapi-bucket'
