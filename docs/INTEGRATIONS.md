@@ -9,23 +9,16 @@ apt-get install git
 ```
 * redis server (stable version)
 ```
-mkdir ~/cloudServer_scripts && \
-cd ~/cloudServer_scripts && \
-wget http://download.redis.io/releases/redis-4.0.1.tar.gz && \
-tar xzf redis-4.0.1.tar.gz && \
-cd redis-4.0.1 && \
-make
+docker pull redis
 ```
-<span style="color:green">{{ADD COMMANDS FOR EACH INSTALL}}</span>
 
 ### 2. Setting up Zenko Cloud Server (formerly S3 server):
 * Clone the cloud server:
 ```
-cd ~/ && \
-git clone https://github.com/scality/S3.git && \
-cd S3 && \
-git checkout 42-hackathon-utapi &&\
-//npm i
+cd ~/ &&
+git clone https://github.com/scality/S3.git &&
+cd S3 &&
+git checkout 42-hackathon-utapi &&
 ```
 
 * Edit config.json file of Cloud Server and add the following lines:
@@ -46,7 +39,7 @@ Note: {endpoint-url}: This would be https://<host> where your cloud server is ru
 
 * Make an image from the Dockerfile in the S3 folder:
 ```
-docker build -t cloudserver . && \
+docker build -t cloudserver . &&
 docker images
 ```
 Upon successful built of the image, the output of docker images should have the cloudserver image along with your other images:
@@ -56,37 +49,29 @@ cloudserver         latest              ecf4fc3a4850        14 seconds ago      
 node                6-slim              57264212e5c2        9 days ago          215MB
 hello-world         latest              1815c82652c0        1 months ago        1.84kB
 ```
-<span style="color:green">{{PLEASE REWRITE THIS CHUNK TO MAKE IT WORK WITH DOCKER CONTAINERS}}</span>
 
 ### 3. Run a docker container from the image:
 ```
 docker run -d --name cloudServer -v ~/cloudServer_scripts:/usr/src/app/cloudServer_scripts  cloudserver 
-
 ```
 For more options to add to the container, please refer to this [documentation link](https://github.com/scality/S3/blob/master/docs/DOCKER.rst).
 
-<span style="color:green">{{PLEASE REWRITE THIS CHUNK TO MAKE IT WORK WITH DOCKER CONTAINERS}}</span>
 
+### 4. Start the redis :
+```
+docker run --name some-redis -d redis
+```
+This image includes EXPOSE 6379 (the redis port), so standard container linking will make it automatically available to the linked containers. For more options for this docker image please refer to [this documentation](https://hub.docker.com/_/redis/).
 
-### 4. Configure the container:
+### 5. Configure the container:
 Open a new terminal open a bash shell to the container 
 ```
 docker exec -it cloudServer bash
 ```
 
-### 5. Start the redis :
-```
-cloudServer_scripts/redis-4.0.1/src/redis-server --daemonize yes
-```
-The server will run as a daemon.
-
 ### 6. Install awscli in the docker container:
 ```
-apt-get update && \
-apt-get install apt-file && \
-apt-file update && \
-apt-get install awscli
-
+apt-get update && apt-get install apt-file && apt-file update && apt-get install awscli
 ```
 
 ### 7. Configure access keys for the utapiuser:
@@ -101,8 +86,6 @@ Default region name [None]:
 Default output format [None]:
 ```
 For more information about User Access Configuration, please refer to [this documentation](http://s3-server.readthedocs.io/en/latest/GETTING_STARTED/#setting-your-own-access-key-and-secret-key-pairs)
-
-<span style="color:green">{{PLEASE LINK TO S3 AND UTAPI DOC SECTIONS ABOUT USER ACCESS CONFIGURATION}}<span>
 
 ### 8. Start the UTAPI server:
 ```
@@ -129,7 +112,7 @@ aws s3api create-bucket --bucket utapi-bucket --endpoint http://localhost:8000 -
 
 ### 9. Copy a test file in 'utapi-bucket':
 ```
-fallocate -l 100M file.out && \
+fallocate -l 100M file.out &&
 aws s3api put-object --bucket utapi-bucket --key utapi-object --body ./file.out --endpoint http://localhost:8000 --profile utapiuser
 ```
 * Expected Output:
@@ -140,12 +123,11 @@ aws s3api put-object --bucket utapi-bucket --key utapi-object --body ./file.out 
 ```
 
 ### 10. Getting Storage Utilization of the UTAPI bucket:
-
 * Create a script in the host machine in folder that has been mounted as a volume in the container.
-
 ```
 cd ~/cloudServer_scripts
 ``` 
+
 #### The JS way:
 * Create a script (metrics.js) with the following code (change accessKeyID, secretAccessKey and bucketName if needed):
 
